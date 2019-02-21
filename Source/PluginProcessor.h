@@ -65,7 +65,7 @@ public:
         kNumParameters          // 1
     };
     
-    float inputGain;
+    float _inputGain;
 
 private:
     //==============================================================================

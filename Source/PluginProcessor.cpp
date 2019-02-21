@@ -15,7 +15,7 @@
 //==============================================================================
 OverdriveAudioProcessor::OverdriveAudioProcessor()
 {
-    inputGain = 1.0f;
+    _inputGain = 1.0f;
 }
 
 OverdriveAudioProcessor::~OverdriveAudioProcessor()
@@ -40,7 +40,7 @@ float OverdriveAudioProcessor::getParameter (int index)
     // UI-related, or anything at all that may block in any way!
     switch (index)
     {
-        case kInputGain:        return inputGain;
+        case kInputGain:        return _inputGain;
         default:                     return 0.0f;
     }
 }
@@ -53,7 +53,7 @@ void OverdriveAudioProcessor::setParameter (int index, float newValue)
     switch (index)
     {
         case kInputGain:
-            inputGain = newValue;
+            _inputGain = newValue;
             break;
         default:
             break;
@@ -162,12 +162,15 @@ void OverdriveAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
     // audio processing...
     for (int channel = 0; channel < getNumInputChannels(); ++channel)
     {
+		// Apply gain change to all samples in the buffer
+		buffer.applyGain(channel, 0, buffer.getNumSamples(), _inputGain);
+
         float* channelData = buffer.getWritePointer (channel);
 
         for (int i = 0; i < numSamples; ++i)
         {
             // Store input sample then get the absolute value
-            const float in = channelData[i] * inputGain;
+            const float in = channelData[i];
             const float absIn = fabs(in);
             
             // Get sign of input sample
@@ -178,7 +181,7 @@ void OverdriveAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
             float threshold2 = 2.0f / 3.0f; // 0.66666
             
             if (absIn > threshold2) {
-                out = 1.0f * sign;
+                out = 0.99f * sign;
             }
             else if (absIn > threshold1){
                 out = ((3.0f - (2.0f - 3.0f * absIn) * (2.0f - 3.0f * absIn)) / 3.0f) * sign;
@@ -188,7 +191,7 @@ void OverdriveAudioProcessor::processBlock (AudioSampleBuffer& buffer, MidiBuffe
             }
             
             // Write the result to the ouptut buffer
-            channelData[i] = out * 0.95f;
+            channelData[i] = out / 2.0f; // divide all by 2 to compensate for extra 6 dB gain boost
         }
     }
 }
