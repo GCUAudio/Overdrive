@@ -12,7 +12,7 @@
               pluginAAXCategory="2" jucerVersion="5.4.1" buildAUv3="0" displaySplashScreen="1"
               reportAppUsage="1" splashScreenColour="Dark" buildStandalone="0"
               enableIAA="0" cppLanguageStandard="11" companyCopyright="" pluginFormats="buildVST3"
-              companyName="GCU Audio">
+              companyName="GCU Audio" pluginVST3Category="Distortion">
   <MAINGROUP id="yvNobk" name="Overdrive">
     <GROUP id="{5F0C92C7-3160-B07D-B1B7-FCADE1595C53}" name="Source">
       <FILE id="lijkPJ" name="PluginProcessor.cpp" compile="1" resource="0"
